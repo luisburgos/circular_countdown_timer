@@ -78,11 +78,14 @@ class CircularCountDownTimer extends StatefulWidget {
   /// Handles the timer start.
   final bool autoStart;
 
-  /* 
+  /// Widget to be rendered. Preceeds [isTimerTextShown] property.
+  final Widget? child;
+
+  /*
    * Function to format the text.
    * Allows you to format the current duration to any String.
    * It also provides the default function in case you want to format specific moments
-     as in reverse when reaching '0' show 'GO', and for the rest of the instances follow 
+     as in reverse when reaching '0' show 'GO', and for the rest of the instances follow
      the default behavior.
   */
   final Function(Function(Duration duration) defaultFormatterFunction,
@@ -114,6 +117,7 @@ class CircularCountDownTimer extends StatefulWidget {
     this.autoStart = true,
     this.textFormat,
     this.controller,
+    this.child,
   }) : assert(initialDuration <= duration);
 
   @override
@@ -303,20 +307,25 @@ class CircularCountDownTimerState extends State<CircularCountDownTimer>
                             backgroundGradient: widget.backgroundGradient),
                       ),
                     ),
-                    widget.isTimerTextShown
+                    widget.child != null
                         ? Align(
                             alignment: FractionalOffset.center,
-                            child: Text(
-                              time,
-                              style: widget.textStyle ??
-                                  const TextStyle(
-                                    fontSize: 16.0,
-                                    color: Colors.black,
-                                  ),
-                              textAlign: widget.textAlign,
-                            ),
+                            child: widget.child!,
                           )
-                        : Container(),
+                        : widget.isTimerTextShown
+                            ? Align(
+                                alignment: FractionalOffset.center,
+                                child: Text(
+                                  time,
+                                  style: widget.textStyle ??
+                                      const TextStyle(
+                                        fontSize: 16.0,
+                                        color: Colors.black,
+                                      ),
+                                  textAlign: widget.textAlign,
+                                ),
+                              )
+                            : Container(),
                   ],
                 ),
               ),
